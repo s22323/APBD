@@ -17,20 +17,48 @@ namespace APBD1
             ArrayList list = new ArrayList();
             foreach (Match match in matchCollection)
             {
-                list.Add(match.Value);
+                if (!list.Contains(match.Value))
+                {
+                    list.Add(match.Value);
+                }
             }
+            if (list.Count < 0)
+            {
+                Console.WriteLine("Nie znaleziono adresów e-mail");
+            }
+            else
+            {
                 foreach (String s in list)
                 {
-                Console.WriteLine(s);
+                    Console.WriteLine(s);
                 }
+            }
         }
         static async Task Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                throw new ArgumentNullException("Podaj URL");
+            }
             string websiteUrl = args[0];
+            if(!(Uri.IsWellFormedUriString(websiteUrl, UriKind.Absolute)))
+            {
+                throw new ArgumentException("Podaj poprawny adres URL");
+            }
             HttpClient httpClient = new HttpClient();
-            HttpResponseMessage response = await httpClient.GetAsync(websiteUrl);
-            string websiteContent = await response.Content.ReadAsStringAsync();
-            showEmails(websiteContent);
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(websiteUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    string websiteContent = await response.Content.ReadAsStringAsync();
+                    showEmails(websiteContent);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("Błąd podczas ładowania strony");
+            } finally {
+                httpClient.Dispose();
+            }
         }
     }
 }
