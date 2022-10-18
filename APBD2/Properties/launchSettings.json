@@ -2,7 +2,7 @@
   "profiles": {
     "APBD2": {
       "commandName": "Project",
-      "commandLineArgs": ".\\export „.\\Source\\dane.csv” json"
+      "commandLineArgs": "Source\\dane.csv Source\\result.json json"
     }
   }
 }
